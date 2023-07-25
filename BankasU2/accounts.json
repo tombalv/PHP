@@ -1,0 +1,78 @@
+{
+    "accounts": {
+        "0": {
+            "name": "Tomas",
+            "surname": "krabas",
+            "account_number": "LT000000111876153",
+            "personal_code": "12345678901",
+            "balance": 0
+        },
+        "1": {
+            "name": "Krabas",
+            "surname": "Krabas",
+            "account_number": "LT000000187231323",
+            "personal_code": "12345678901",
+            "balance": 50,
+            "transactions": [
+                {
+                    "date": "2023-07-25 20:52:10",
+                    "type": "add",
+                    "amount": 50
+                },
+                {
+                    "date": "2023-07-25 22:09:34",
+                    "type": "add",
+                    "amount": 50
+                },
+                {
+                    "date": "2023-07-25 22:10:33",
+                    "type": "withdraw",
+                    "amount": 50
+                }
+            ]
+        },
+        "2": {
+            "name": "Tomas",
+            "surname": "Tomas",
+            "account_number": "LT000000831592910",
+            "personal_code": "12345877777",
+            "balance": 50,
+            "transactions": [
+                {
+                    "date": "2023-07-25 20:52:23",
+                    "type": "add",
+                    "amount": 50
+                }
+            ]
+        },
+        "4": {
+            "name": "Jonas",
+            "surname": "Atomas",
+            "account_number": "LT000000519806558",
+            "personal_code": "999999999999",
+            "balance": 0,
+            "transactions": [
+                {
+                    "date": "2023-07-25 20:52:00",
+                    "type": "add",
+                    "amount": 20
+                },
+                {
+                    "date": "2023-07-25 20:53:06",
+                    "type": "add",
+                    "amount": 20
+                },
+                {
+                    "date": "2023-07-25 20:56:35",
+                    "type": "withdraw",
+                    "amount": 20
+                },
+                {
+                    "date": "2023-07-25 20:57:04",
+                    "type": "withdraw",
+                    "amount": 20
+                }
+            ]
+        }
+    }
+}
