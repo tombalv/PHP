@@ -41,14 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     unset($account); // Išvalome nuorodą, kad išsaugotų pakeitimus
     saveDataToJson($data);
-
-    // Po sėkmingo įrašymo, galime peradresuoti vartotoją į sąskaitų sąrašo puslapį
-    header('Location: index.php');
-    exit();
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html>
@@ -65,12 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         border-radius: 5px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         z-index: 9999;
-    }
+        }
 
-    .popup-content {
-        font-size: 16px;
-        color: #333;
-    }
+        .popup-content {
+            font-size: 16px;
+            color: #333;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -141,16 +135,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
      <script>
-        function showPopup(message) {
-            var popup = document.createElement("div");
-            popup.className = "popup";
-            popup.innerHTML = '<div class="popup-content">' + message + '</div>';
-            document.body.appendChild(popup);
-            setTimeout(function () {
-                document.body.removeChild(popup);
-            }, 3000); // Remove the popup after 3 seconds (adjust as needed)
-        }
-    </script>
+    function showPopup(message) {
+        var popup = document.createElement("div");
+        popup.className = "popup";
+        popup.innerHTML = '<div class="popup-content">' + message + '</div>';
+        document.body.appendChild(popup);
+        setTimeout(function () {
+            document.body.removeChild(popup);
+        }, 3000); // Remove the popup after 3 seconds (adjust as needed)
+    }
+</script>
 </head>
 <body>
     <h1>Pridėti lėšų</h1>
@@ -169,6 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: login.php');
         exit();
     }
+   
 
     // Jei vartotojas yra prisijungęs, galime gauti jo vartotojo vardą ir rolę
     $username = $_SESSION['username'];
@@ -211,6 +206,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
             <button type="submit">Pasirinkti</button>
         </form>
+        <?php  if (isset($_SESSION['add_funds_success'])) {
+        // Display the pop-up message
+        echo '<script>showPopup("Lėšos sėkmingai pridėtos į jūsų sąskaitą.");</script>';
+    
+        // Clear the session variable to prevent showing the message again on page reload
+        unset($_SESSION['add_funds_success']);
+    } ?>
     <?php endif; ?>
+   
 </body>
 </html>

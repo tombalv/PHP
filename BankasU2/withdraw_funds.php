@@ -45,9 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     saveDataToJson($data);
 
     // Po sėkmingo įrašymo, galime peradresuoti vartotoją į sąskaitų sąrašo puslapį
-    header('Location: index.php');
+    header('Location: withdraw_funds.php');
     exit();
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -65,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         border-radius: 5px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         z-index: 9999;
-    }
+         }
 
-    .popup-content {
+        .popup-content {
         font-size: 16px;
         color: #333;
-    }
+         }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -159,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <ul>
                 <li><a href="index.php">Pagrindinis</a></li>
                 <li><a href="create_account.php">Sukurti sąskaita</a></li>
-                <li><a href="add_funds.php?account_number=<?php echo $account['account_number']; ?>">Pridėti lėšų</a></li>
+                <li><a href="add_funds.php">Pridėti lėšų</a></li>
             </ul>
         </nav>
     <?php
@@ -207,6 +209,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
             <button type="submit">Pasirinkti</button>
         </form>
+        <?php  if (isset($_SESSION['withdraw_funds_success'])) {
+        // Display the pop-up message
+        echo '<script>showPopup("Lėšos sėkmingai nurašytos nuo jūsų sąskaitos.");</script>';
+    
+        // Clear the session variable to prevent showing the message again on page reload
+        unset($_SESSION['withdraw_funds_success']);
+    } ?>
     <?php endif; ?>
 </body>
 </html>

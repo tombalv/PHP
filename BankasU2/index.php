@@ -18,7 +18,41 @@ usort($data['accounts'], function ($a, $b) {
     return strcmp($a['surname'], $b['surname']);
 });
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Patikriname, ar formoje buvo pasirinkta operacija "add" arba "withdraw"
+    if (isset($_POST['operation']) && $_POST['operation'] === 'add') {
+        $data = readDataFromJson();
+        $accountNumber = $_POST['account_number'];
+        $amount = floatval($_POST['amount']);
+
+        // Raskime sąskaitą pagal sąskaitos numerį
+        foreach ($data['accounts'] as &$account) {
+            if ($account['account_number'] === $accountNumber) {
+                // Įrašome transakciją į sąskaitos duomenis
+                $transaction = [
+                    'date' => date('Y-m-d H:i:s'),
+                    'type' => 'add',
+                    'amount' => $amount
+                ];
+                $account['transactions'][] = $transaction;
+
+                // Atnaujiname sąskaitos likutį
+                $account['balance'] += $amount;
+
+                // Save the updated data to JSON file
+                saveDataToJson($data);
+
+                // Add success message to the session
+                $_SESSION['add_funds_success'] = 'Lėšos sėkmingai pridėtos į jūsų sąskaitą.';
+
+                // Po sėkmingo įrašymo, galime peradresuoti vartotoją į sąskaitų sąrašo puslapį
+                header('Location: index.php');
+                exit();
+            }
+        }
+        unset($account); // Išvalome nuorodą, kad išsaugotų pakeitimus
+    } elseif (isset($_POST['delete'])) {
+        // Handle the code for deleting the account here
         $accountNumberToDelete = $_POST['account_number'];
         $data = readDataFromJson();
         
@@ -37,48 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
         // Po sėkmingo ištrynimo, galime peradresuoti vartotoją į sąskaitų sąrašo puslapį
         header('Location: index.php');
         exit();
-
-    // Patikriname, ar formoje buvo pasirinkta operacija "add" arba "withdraw"
-    if (isset($_POST['operation'])) {
-        $data = readDataFromJson();
-        $accountNumber = $_POST['account_number'];
-        $amount = floatval($_POST['amount']);
-        $operation = $_POST['operation'];
-
-        // Raskime sąskaitą pagal sąskaitos numerį
-        foreach ($data['accounts'] as &$account) {
-            if ($account['account_number'] === $accountNumber) {
-                // Įrašome transakciją į sąskaitos duomenis
-                $transaction = [
-                    'date' => date('Y-m-d H:i:s'),
-                    'type' => $operation,
-                    'amount' => $amount
-                ];
-                $account['transactions'][] = $transaction;
-
-                // Atnaujiname sąskaitos likutį
-                if ($operation === 'add') {
-                    $account['balance'] += $amount;
-                } elseif ($operation === 'withdraw') {
-                    if ($account['balance'] >= $amount) {
-                        $account['balance'] -= $amount;
-                    } else {
-                        header('Location: withdraw_funds.php?error=1');
-                        exit();
-                    }
-                }
-
-                break;
-            }
-        }
-        unset($account); // Išvalome nuorodą, kad išsaugotų pakeitimus
-        saveDataToJson($data);
-
-        // Po sėkmingo įrašymo, galime peradresuoti vartotoją į sąskaitų sąrašo puslapį
-        header('Location: index.php');
-        exit();
     }
-    
 }
 
 ?>
@@ -211,60 +204,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
             margin-top: 20px;
         }
         header {
-  background-color: #333;
-  padding: 1rem;
-  color: #fff;
-}
+        background-color: #333;
+        padding: 1rem;
+        color: #fff;
+        }
 
-header h1 {
-  margin: 0;
-}
+        header h1 {
+        margin: 0;
+        }
 
-nav {
-  background-color: #444;
-  padding: 0.5rem;
-}
+        nav {
+        background-color: #444;
+        padding: 0.5rem;
+        }
 
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+        nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        }
 
-nav li {
-  display: inline-block;
-  margin-right: 1rem;
-}
+        nav li {
+        display: inline-block;
+        margin-right: 1rem;
+        }
 
-nav li a {
-  text-decoration: none;
-  color: #fff;
-}
+        nav li a {
+        text-decoration: none;
+        color: #fff;
+        }
 
-nav li a:hover {
-  text-decoration: underline;
-}
+        nav li a:hover {
+        text-decoration: underline;
+        }
 
-h1 {
-  margin-bottom: 1rem;
-  color: #333;
-}
+        h1 {
+        margin-bottom: 1rem;
+        color: #333;
+        }
 
-h2 {
-  margin-bottom: 1rem;
-  color: #444;
-}
+        h2 {
+        margin-bottom: 1rem;
+        color: #444;
+        }
 
-/* Menu styles */
-nav li a.menu-button {
-  background-color: #008cba;
-  padding: 0.8rem 1rem;
-  border-radius: 4px;
-}
+        /* Menu styles */
+        nav li a.menu-button {
+        background-color: #008cba;
+        padding: 0.8rem 1rem;
+        border-radius: 4px;
+        }
 
-nav li a.menu-button:hover {
-  background-color: #006a88;
-}
+        nav li a.menu-button:hover {
+        background-color: #006a88;
+        }
     </style>
     <script>
         function showPopup(message) {
@@ -286,7 +279,7 @@ nav li a.menu-button:hover {
 <nav>
     <ul>
         <li><a href="create_account.php">Sukurti sąskaita</a></li>
-        <li><a href="add_funds.php?account_number=<?php echo $account['account_number']; ?>">Pridėti lėšų</a></li>
+        <li><a href="add_funds.php">Pridėti lėšų</a></li>
         <li><a href="withdraw_funds.php">Išimti lėšas</a></li>
     </ul>
 </nav>
@@ -324,7 +317,7 @@ nav li a.menu-button:hover {
                 <td><?php echo number_format($account['balance'], 2); ?> EUR</td>
                 <td>
                 <?php if ($account['balance'] <= 0) : ?>
-                    <form method="post" onsubmit="return confirm('Ar tikrai norite ištrinti šią sąskaitą?');">
+                    <form method="post"  onsubmit="return confirm('Ar tikrai norite ištrinti šią sąskaitą?');">
                         <input type="hidden" name="account_number" value="<?php echo $account['account_number']; ?>">
                         <button type="submit" name="delete">Ištrinti</button>
                     </form>
