@@ -55,97 +55,112 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Banko aplikacija - Pridėti lėšų</title>
     <style>
+        .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+    }
+
+    .popup-content {
+        font-size: 16px;
+        color: #333;
+    }
         body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
-}
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-}
+        header {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        h1 {
+        margin-bottom: 1rem;
+        color: #333;
+        }
 
-.title {
-    text-align: center;
-}
+        nav {
+            background-color: #444;
+            padding: 0.5rem;
+        }
 
-.login-form {
-    margin-top: 20px;
-}
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
-.login-form label,
-.login-form input,
-.login-form button {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-}
+        nav li {
+            display: inline-block;
+            margin-right: 1rem;
+        }
 
-.login-form button {
-    margin-top: 20px;
-}
+        nav a {
+            color: #007bff;
+            text-decoration: none;
+            padding: 5px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+        }
 
-/* Add styles for the navigation menu */
-nav {
-    background-color: #006a88;
-    padding: 10px;
-}
+        nav a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
 
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-}
+        nav li a {
+        text-decoration: none;
+        color: #fff;
+        }
 
-nav li {
-    margin-right: 20px;
-}
+        nav li a:hover {
+        text-decoration: underline;
+        }
 
-nav li:last-child {
-    margin-right: 0;
-}
+        button {
+            width: 65px;
+            height: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-nav li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-nav li a:hover {
-    background-color: #004e6b;
-}
-
-/* Add styles for the table */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table th,
-table td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-}
-
-table th {
-    text-align: left;
-    background-color: #f2f2f2;
-}
-
-table tr:hover {
-    background-color: #f5f5f5;
-}
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
+     <script>
+        function showPopup(message) {
+            var popup = document.createElement("div");
+            popup.className = "popup";
+            popup.innerHTML = '<div class="popup-content">' + message + '</div>';
+            document.body.appendChild(popup);
+            setTimeout(function () {
+                document.body.removeChild(popup);
+            }, 3000); // Remove the popup after 3 seconds (adjust as needed)
+        }
+    </script>
 </head>
 <body>
     <h1>Pridėti lėšų</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php">Pagrindinis</a></li>
+                <li><a href="create_account.php">Sukurti sąskaita</a></li>
+                <li><a href="withdraw_funds.php">Išimti lėšas</a></li>
+            </ul>
+        </nav>
 
     <?php
     // Patikriname, ar vartotojas yra prisijungęs
@@ -181,8 +196,7 @@ table tr:hover {
             <input type="hidden" name="account_number" value="<?php echo $currentAccount['account_number']; ?>">
             <label for="amount">Įveskite sumą:</label>
             <input type="number" step="0.01" name="amount" id="amount" required>
-            <input type="radio" name="transaction_type" value="add" checked>
-            <label for="add">Pridėti lėšų</label>
+            <input type="hidden" name="transaction_type" value="add" checked>
             <button type="submit">Patvirtinti</button>
         </form>
     <?php else : ?>

@@ -1,76 +1,59 @@
 {
     "accounts": {
-        "0": {
-            "name": "Tomas",
-            "surname": "krabas",
-            "account_number": "LT000000111876153",
-            "personal_code": "12345678901",
-            "balance": 0
-        },
-        "1": {
-            "name": "Krabas",
-            "surname": "Krabas",
-            "account_number": "LT000000187231323",
-            "personal_code": "12345678901",
-            "balance": 50,
-            "transactions": [
-                {
-                    "date": "2023-07-25 20:52:10",
-                    "type": "add",
-                    "amount": 50
-                },
-                {
-                    "date": "2023-07-25 22:09:34",
-                    "type": "add",
-                    "amount": 50
-                },
-                {
-                    "date": "2023-07-25 22:10:33",
-                    "type": "withdraw",
-                    "amount": 50
-                }
-            ]
-        },
-        "2": {
-            "name": "Tomas",
-            "surname": "Tomas",
-            "account_number": "LT000000831592910",
-            "personal_code": "12345877777",
-            "balance": 50,
-            "transactions": [
-                {
-                    "date": "2023-07-25 20:52:23",
-                    "type": "add",
-                    "amount": 50
-                }
-            ]
-        },
         "4": {
-            "name": "Jonas",
+            "account_number": "LT000000781113741",
+            "name": "Tomas",
             "surname": "Atomas",
-            "account_number": "LT000000519806558",
-            "personal_code": "999999999999",
+            "personal_id": "123456789104",
             "balance": 0,
             "transactions": [
                 {
-                    "date": "2023-07-25 20:52:00",
+                    "date": "2023-07-26 14:42:04",
                     "type": "add",
-                    "amount": 20
+                    "amount": 200
                 },
                 {
-                    "date": "2023-07-25 20:53:06",
+                    "date": "2023-07-26 14:42:29",
+                    "type": "withdraw",
+                    "amount": 200
+                }
+            ]
+        },
+        "5": {
+            "account_number": "LT000000725863901",
+            "name": "Tomas",
+            "surname": "Zebras",
+            "personal_id": "123456789101",
+            "balance": 0,
+            "transactions": [
+                {
+                    "date": "2023-07-26 14:42:10",
                     "type": "add",
-                    "amount": 20
+                    "amount": 100
                 },
                 {
-                    "date": "2023-07-25 20:56:35",
+                    "date": "2023-07-26 14:42:39",
                     "type": "withdraw",
-                    "amount": 20
+                    "amount": 100
+                }
+            ]
+        },
+        "6": {
+            "account_number": "LT000000789710136",
+            "name": "Tomas",
+            "surname": "Matomas",
+            "personal_id": "123456789102",
+            "balance": 0,
+            "transactions": [
+                {
+                    "date": "2023-07-26 14:42:17",
+                    "type": "add",
+                    "amount": 50
                 },
                 {
-                    "date": "2023-07-25 20:57:04",
+                    "date": "2023-07-26 14:42:48",
                     "type": "withdraw",
-                    "amount": 20
+                    "amount": 50
                 }
             ]
         }
