@@ -2,7 +2,7 @@
 // Funkcija, kuri nuskaito duomenis iš JSON failo ir gražina masyvą
 function readDataFromJson()
 {
-    $file = '/Applications/XAMPP/xamppfiles/htdocs/PHP/BankasU2/accounts.json';
+    $file = '/Applications/XAMPP/xamppfiles/htdocs/PHP/BankasU2/data/accounts.json';
     if (!file_exists($file)) {
         file_put_contents($file, json_encode(['accounts' => []]));
     }
@@ -12,7 +12,7 @@ function readDataFromJson()
 
 function saveDataToJson($data)
 {
-    $file = '/Applications/XAMPP/xamppfiles/htdocs/PHP/BankasU2/accounts.json';
+    $file = '/Applications/XAMPP/xamppfiles/htdocs/PHP/BankasU2/data/accounts.json';
   // Konvertuojame masyvą į JSON formatą
   $jsonData = json_encode($data, JSON_PRETTY_PRINT);
   // Įrašome JSON duomenis į failą
@@ -29,10 +29,11 @@ function generateAccountNumber()
     foreach ($data['accounts'] as $account) {
         $usedAccountNumbers[] = $account['account_number'];
     }
-    $prefix = 'LT';
+
+    $prefix = 'LT21';
     do {
-        $accountNumber = $prefix . str_pad(mt_rand(0, 999999999), 15, '0', STR_PAD_LEFT);
+        $accountNumber = $prefix . str_pad(mt_rand(0, 999999999), 10, '0', STR_PAD_LEFT);
     } while (in_array($accountNumber, $usedAccountNumbers));
+
     return $accountNumber;
 }
-?>

@@ -1,81 +1,112 @@
 <?php
+session_start();
 include 'functions.php';
 
-// Pranešimo kintamasis
-$message = '';
+// Patikriname, ar vartotojas yra prisijungęs
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit();
+}
 
-// Patikriname, ar yra POST užklausa ir ar saskaita jau buvo sukurta
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['surname'], $_POST['personal_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = readDataFromJson();
     $name = $_POST['name'];
     $surname = $_POST['surname'];
-    $personalCode = $_POST['personal_id'];
+    $personalId = $_POST['personal_id'];
 
-    // Tikriname, ar vardas ir pavardė ilgesni nei 3 simboliai
-    if (strlen($name) < 3 || strlen($surname) < 3) {
-        $message = 'Vardas ir pavardė turi būti ilgesni nei 3 simboliai.';
-    } else {
-        // Tęsiame sąskaitos sukūrimo logiką
-        $data = readDataFromJson(); // Gauti duomenis iš JSON failo
-
-        // Patikriname, ar sąskaitos numeris jau neegzistuoja
-        $exists = true;
-        while ($exists) {
-            $newAccountNumber = generateAccountNumber();
-            $exists = false;
-            foreach ($data['accounts'] as $account) {
-                if ($account['account_number'] === $newAccountNumber) {
-                    $exists = true;
-                    break;
-                }
-            }
-        }
-
-        $newAccount = [
-            'name' => $name,
-            'surname' => $surname,
-            'account_number' => $newAccountNumber,
-            'personal_id' => $personalCode,
-            'balance' => 0
-        ];
-        $data['accounts'][] = $newAccount; // Pridėti naują sąskaitą prie sąrašo
-
-        saveDataToJson($data); // Išsaugoti duomenis į JSON failą
-
-        $message = "Nauja sąskaita sukurta. Sąskaitos numeris: " . $newAccount['account_number'];
-        header('Location: index.php');
+    // Validate personal identification number (asmens kodas)
+    if (strlen($personalId) !== 11 || !ctype_digit($personalId)) {
+        header('Location: create_account.php?error=2'); // Error code 2 for invalid personal identification number
+        exit();
     }
+
+    // Patikriname, ar asmens kodas jau egzistuoja
+    foreach ($data['accounts'] as $account) {
+        if ($account['personal_id'] === $personalId) {
+            header('Location: create_account.php?error=1'); // Error code 1 for existing personal identification number
+            exit();
+        }
+    }
+
+    // Generuojame unikalų sąskaitos numerį
+    $accountNumber = generateAccountNumber();
+
+    // Sukuriame naują sąskaitos masyvą
+    $newAccount = [
+        'account_number' => $accountNumber,
+        'name' => $name,
+        'surname' => $surname,
+        'personal_id' => $personalId,
+        'balance' => 0,
+        'transactions' => []
+    ];
+
+    // Pridedame naują sąskaitą prie duomenų masyvo
+    $data['accounts'][] = $newAccount;
+
+    // Išsaugome atnaujintus duomenis į JSON failą
+    saveDataToJson($data);
+
+    // Set a session variable to indicate successful account creation
+    $_SESSION['account_created'] = true;
+
+    // Peradresuojame vartotoją į sąskaitų sąrašo puslapį
+    header('Location: create_account.php');
+    exit();
 }
 ?>
 
+
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
+       <link rel="stylesheet" href="./css/create_account.css">
     <title>Nauja sąskaita</title>
-    
-</head>
-<body>
-    <h1>Nauja sąskaita</h1>
+    </head>
+        <body>
+   
+       
+        <h1>Nauja sąskaita</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php">Pagrindis</a></li>
+                <li><a href="add_funds.php">Pridėti lėšų</a></li>
+                <li><a href="withdraw_funds.php">Išimti lėšas</a></li>
+            </ul>
+        </nav>
+        <?php
+            // Check if the account has been created and show the message
+            if (isset($_SESSION['account_created']) && $_SESSION['account_created']) {
+                echo '<div class="success-message">';
+                echo 'Sąskaita sėkmingai sukurta.';
+                echo '</div>';
 
-    <nav>
-    <ul>
-    <li><a href="index.php">Pagrindis</a></li>
-    <li><a href="add_funds.php?account_number=<?php echo $account['account_number']; ?>">Pridėti lėšų</a></li>
+                // Clear the PHP session variable to avoid showing the message again on subsequent page loads
+                unset($_SESSION['account_created']);
+            }
 
-        <li><a href="withdraw_funds.php">Išimti lėšas</a></li>
-    </ul>
-</nav>
-    <?php if (isset($_GET['error']) && $_GET['error'] == 1) : ?>
-        <p style="color: red;">Toks asmens kodas jau egzistuoja. Įveskite unikalų asmens kodą.</p>
-    <?php endif; ?>
-    
-    <form method="post" action="create_account_backend.php">
-    <label for="name">Vardas:</label>
-    <input type="text" name="name" id="name" required>
-    <label for="surname">Pavardė:</label>
-    <input type="text" name="surname" id="surname" required>
-    <label for="personal_id">Asmens kodas:</label>
-    <input type="text" name="personal_id" id="personal_id" required>
-    <button type="submit">Sukurti</button>
-</form>
-</body>
+            // Check for error and display error message if error=1
+            if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['error']) && $_GET['error'] === '1') {
+                echo '<div class="error-message">';
+                echo 'Klaida: Sąskaita su tokiu asmens kodu jau egzistuoja.';
+                echo '</div>';
+            }
+
+            // Check for error and display error message if error=2
+            if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['error']) && $_GET['error'] === '2') {
+                echo '<div class="error-message">';
+                echo 'Klaida: Asmens kodą sudaro 11 skaitmenų ilgio.';
+                echo '</div>';
+            }
+            ?>
+        <form method="post" action="create_account.php">
+            <label for="name">Vardas:</label>
+                <input type="text" name="name" id="name" required>
+            <label for="surname">Pavardė:</label>
+                <input type="text" name="surname" id="surname" required>
+            <label for="personal_id">Asmens kodas:</label>
+                <input type="text" name="personal_id" id="personal_id" required>
+                    <button type="submit">Sukurti</button>
+        </form>
+    </body>
 </html>
