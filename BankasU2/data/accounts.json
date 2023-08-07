@@ -1,31 +1,3 @@
 {
-    "accounts": [
-        {
-            "account_number": "LT210033572549",
-            "name": "Tomas",
-            "surname": "Krabas",
-            "personal_id": "12345678910",
-            "balance": 0,
-            "transactions": [
-                {
-                    "date": "2023-07-27 15:29:10",
-                    "type": "add",
-                    "amount": 50
-                },
-                {
-                    "date": "2023-07-27 15:29:20",
-                    "type": "withdraw",
-                    "amount": 50
-                }
-            ]
-        },
-        {
-            "account_number": "LT210148074480",
-            "name": "Tomas",
-            "surname": "Atomas",
-            "personal_id": "12345678911",
-            "balance": 0,
-            "transactions": []
-        }
-    ]
+    "accounts": []
 }

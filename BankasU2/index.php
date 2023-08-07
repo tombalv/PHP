@@ -13,7 +13,8 @@
     include 'functions.php';
 
     $data = readDataFromJson(); // Nuskaitome duomenis iš JSON failo
-    // Sort accounts alphabetically by surname
+   
+    
     usort($data['accounts'], function ($a, $b) {
         return strcmp($a['surname'], $b['surname']);
     });
