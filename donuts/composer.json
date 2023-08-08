@@ -1,0 +1,15 @@
+{
+    "name": "tomasbalvocius/donuts",
+    "autoload": {
+        "psr-4": {
+            "Tomasbalvocius\\Donuts\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "tomasbalvocius",
+            "email": "tomasbalv@gmail.com"
+        }
+    ],
+    "require": {}
+}
